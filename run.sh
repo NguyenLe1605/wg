@@ -8,7 +8,7 @@ fi
 
 cleanup() {
     echo "Signal caught, killing the Docker container..."
-    docker kill wontun-remote
+    docker kill wg-remote
     exit 0
 }
 
@@ -25,16 +25,16 @@ case "$1" in
         ./scripts/run_client.sh
         ;;
     server)
-        make wontun-remote-docker
+        make wg-remote-docker
 
         # Set trap for INT and TERM signals
         trap cleanup INT TERM
 
         echo "run server"
         # Run the Docker container in the background
-        docker run --name wontun-remote \
-          --rm --network=wontun-test --cap-add=NET_ADMIN \
-          --device=/dev/net/tun wontun-remote:latest &
+        docker run --name wg-remote \
+          --rm --network=wg-test --cap-add=NET_ADMIN \
+          --device=/dev/net/tun wg-remote:latest &
 
         # Wait for the Docker container process to exit
         wait $!

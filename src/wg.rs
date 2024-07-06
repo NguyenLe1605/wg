@@ -1,6 +1,6 @@
 use clap::Parser;
 use std::{eprintln, io, net::SocketAddr, sync::Arc};
-use wontun::Device;
+use wg::Device;
 
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]

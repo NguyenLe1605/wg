@@ -1,16 +1,15 @@
 [package]
-name = "wontun"
+name = "wg"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.5.8", features = ["derive"] }
+etherparse = "0.15.0"
+parking_lot = "0.12.3"
+socket2 = "0.5.7"
 tun-tap = "0.1.4"
-etherparse = "0.13.0"
-nix = { version = "0.27.1", features = ["poll", "socket"] }
-parking_lot = "0.12.1"
-socket2 = "0.5.5"
-clap = { version = "^4.4.8", features = ["derive"] }
 
 [[bin]]
-name = "wontun"
-path = "src/wontun.rs"
+name = "wg"
+path = "src/wg.rs"

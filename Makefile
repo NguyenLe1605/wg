@@ -1,12 +1,12 @@
-DOCKER_BUILD_STATE_FILE := .wontun-remote-docker-build
+DOCKER_BUILD_STATE_FILE := .wg-remote-docker-build
 
-target/release/wontun:
+target/release/wg:
 	cargo build --release
 
-wontun-remote-docker: $(DOCKER_BUILD_STATE_FILE)
+wg-remote-docker: $(DOCKER_BUILD_STATE_FILE)
 
-$(DOCKER_BUILD_STATE_FILE): Dockerfile scripts/run_server.sh target/release/wontun
-	docker build -t wontun-remote:latest .
+$(DOCKER_BUILD_STATE_FILE): Dockerfile scripts/run_server.sh target/release/wg
+	docker build -t wg-remote:latest .
 	@touch $(DOCKER_BUILD_STATE_FILE)
 
-.PHONY: wontun-remote-docker
+.PHONY: wg-remote-docker
