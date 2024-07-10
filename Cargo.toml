@@ -4,17 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-chacha20poly1305 = { version = "0.10.1", features = ["heapless", "rand_core", "getrandom"], default-features = false }
-x25519-dalek = { version = "2", features = ["getrandom", "zeroize", "static_secrets"], default-features = false}
-clap = { version = "4.5.8", features = ["derive"] }
-etherparse = "0.15.0"
-heapless = { version = "0.8.0"}
-parking_lot = "0.12.3"
-socket2 = "0.5.7"
-tun-tap = "0.1.4"
-tai64 = {version = "4.0.0", default-features = false}
-blake2 = {version = "0.10.6", default-features = false}
+anyhow = "1.0.86"
+env_logger = "0.11.3"
+libc = "0.2.155"
+log = "0.4.22"
+nix = { version = "0.29.0", features = ["fs"] }
 
-[[bin]]
-name = "wg"
-path = "src/wg.rs"
