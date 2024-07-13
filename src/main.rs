@@ -11,6 +11,7 @@ use wg::{
         logger::{self, LogLevel},
     },
     tun::Tun,
+    unix,
 };
 
 const EXIT_SETUP_SUCCESS: i32 = 0;
@@ -21,16 +22,6 @@ const ENV_WG_UAPI_FD: &str = "WG_UAPI_FD";
 const ENV_WG_PROCESS_FOREGROUND: &str = "WG_PROCESS_FOREGROUND";
 
 const VERSION: &str = "0.0.20230223";
-
-fn set_non_blocking(fd: i32, non_blocking: bool) -> Result<RawFd> {
-    let flag = fcntl(fd, FcntlArg::F_GETFL)?;
-    let mut flag = OFlag::from_bits(flag).unwrap();
-    flag.set(OFlag::O_NONBLOCK, non_blocking);
-    // set the descriptor file flag
-    let arg = FcntlArg::F_SETFL(flag);
-    let _ = fcntl(fd, arg)?;
-    Ok(fd)
-}
 
 fn print_usage(prog_name: &str) {
     println!("Usage: {} [-f/--foreground] INTERFACE-NAME", prog_name);
@@ -45,7 +36,7 @@ fn open_tun_device(if_name: &str) -> Result<Tun> {
 
     // construct tun device from supplied fd
     let fd = tun_fd_str.parse::<i32>()?;
-    let fd = set_non_blocking(fd, true)?;
+    let fd = unix::set_non_blocking(fd, true)?;
     let tun_file = unsafe { File::from_raw_fd(fd) };
     return Tun::create_tun_from_file(tun_file, device::DEFAULT_MTU);
 }
@@ -95,7 +86,7 @@ fn main() -> Result<()> {
     };
 
     logger::init_logger(log_level, &format!("({}) ", interface_name));
-    logger::debug!("Starting wireguard");
+    logger::verbose!("Starting wireguard");
 
     // open TUN device or from fd
     let tun_dev = open_tun_device(&interface_name).unwrap_or_else(|err| {
@@ -103,5 +94,7 @@ fn main() -> Result<()> {
         std::process::exit(EXIT_SETUP_FAILED);
     });
     let interface_name = tun_dev.name().unwrap_or(interface_name);
+
+    // open UAPI file (or use supplied fd)
     Ok(())
 }

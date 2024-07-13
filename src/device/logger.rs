@@ -2,7 +2,7 @@ use env_logger::Builder;
 use log::LevelFilter;
 use std::io::Write;
 
-pub use log::{debug, error};
+pub use log::{debug as verbose, error};
 // Log levels for use with NewLogger.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum LogLevel {
