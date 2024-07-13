@@ -1,3 +1,4 @@
+pub mod conn;
 pub mod device;
 pub mod ipc;
 pub mod rwcancel;

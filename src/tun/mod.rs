@@ -1,12 +1,27 @@
+mod checksum;
+mod offload;
+
 use anyhow::Result;
+use offload::VIRTIO_NET_HDR_LEN;
 use parking_lot::{Mutex, Once};
 use std::fs::File;
+use thiserror::Error;
 
 use crate::rwcancel::RwCancel;
 
-const VIRTIO_NET_HDR_LEN: usize = 8 * 2 + 16 * 4;
 const CLONE_DEVICE_PATH: &str = "dev/net/tun";
 const IF_REQ_SIZE: usize = libc::IFNAMSIZ + 64;
+
+#[derive(Debug, Error)]
+pub enum TunError {
+    #[error("short buffer")]
+    ShortBuffer,
+    // Return by Tun.read() when segmentation
+    // overflows the length of supplied buffers. This error should not cause
+    // reads to cease.
+    #[error("too many segments")]
+    TooManySegments,
+}
 
 #[repr(i32)]
 pub enum Event {
